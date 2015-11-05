@@ -5,9 +5,9 @@
 %   Saves selected workspace variables to 
 %       <Prefix>_<iterations>_setup.mat
 %   to the current working directory
-%   Saves <Prefix>.spe to a specified subdirectory in the current working
-%   directory, according to <speOut> using writeDuraRows.m
-%   Saves a .png file of the last run's results if export_fig is detected:
+%   Saves <Prefix>_<iterations>.spe to a specified subdirectory in the 
+%   current working directory, according to <speOut> using writeDuraRows.m
+%   Saves a .png file of the last run's results if export_fig is detected ie
 %       Output<iterations>.png
 %   to the current working directory
 %   Requires a *.spe file from the last run
@@ -46,11 +46,11 @@ clc
 %%Change script variables here
 NumRefiningPnts=25;
 Prefix='MyPrefix';
-speOut=strcat('SomeDirectory\',Prefix); %path & prefix of new spe
-LastRunWorkspace='SomeLastRunWorkspace';
-LastRunResults='SomeDirectory\Some.spe';
-RefLoc='None'; %change to valid path/file name accordingly.
-demo=0;
+speOut=strcat('SomeLocalDirectory\',Prefix); %path & prefix of new spe
+LastRunWorkspace='SomeWorkspace.mat';
+LastRunResults='SomeLocalDirectory\SomeResults.spe';
+RefLoc='MyResultsFile.txt'; %change to valid path/file name accordingly.
+%demo=1; %only use for debugging
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 load(LastRunWorkspace);
@@ -435,7 +435,7 @@ if ~Iterate
 else
     iterations=iterations+1;
 end
-writeDummyDuraRows(p(new_s_pnt+os_pnt,:),...
+writeDuraRows(p(new_s_pnt+os_pnt,:),...
     strcat(speOut,'_',num2str(iterations),'.spe'));
 
 %write a new workspace, dealing with multiplicity via cells
@@ -447,7 +447,7 @@ if exist('AddPntsLoc','var')==true
         'RefIndentLoc', 'RefIndentHV','RefIndentDiag',...
         'P_outline','D_outline','xOff','yOff','p','t','s_pnt',...
         'ResultHV','ResultDiag','distFactor','iterations',...
-        'AddPntsDiag','AddPntsHV','AddPntsHV');
+        'AddPntsDiag','AddPntsHV','AddPntsLoc');
 else
     save(strcat(Prefix,'_',num2str(iterations),'_setup.mat'),...
         'RefIndentLoc', 'RefIndentHV','RefIndentDiag',...
@@ -457,6 +457,10 @@ end
 
 
 if exist('export_fig','file')==2
-    figure(1);
+    if Moved
+        figure(2);
+    else
+        figure(1);
+    end
     export_fig(sprintf('Output%d.png',iterations-1),'-a2','-m2')
 end

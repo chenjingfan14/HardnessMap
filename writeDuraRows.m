@@ -19,13 +19,13 @@ if length(varargin)<2 || length(varargin)>5
 end
 p=varargin{1};
 fname=varargin{2};
-if length(varargin)<=3
+if length(varargin)>2
     HVstr=varargin{3};
 else
     HVstr='HV 1';
 end
 
-if length(varargin)<=4
+if length(varargin)>3
     Objstr=varargin{4};
 else
     Objstr='20x';
