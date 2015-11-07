@@ -148,7 +148,7 @@ if Moved %then translate everything to the new coordinate system
     D_outline=D_outlinePrime';
     RefIndentLocPrime=R*RefIndentLoc'+repmat(T,1,size(RefIndentLoc,1));
     RefIndentLoc=RefIndentLocPrime'; %for subsequent analyses
-    if exist('AddPntLoc','var')
+    if exist('AddPntsLoc','var')
         AddPntLocPrime=R*AddPntsLoc'+repmat(T,1,size(AddPntsLoc,1));
         AddPntsLoc=AddPntLocPrime'; clear AddPntLocPrime
     end
@@ -395,7 +395,7 @@ end
 
 
 for j=1:size(p,1)
-    circpnts=(max(RefIndentDiag.*distFactor))/2*[cos(theta) sin(theta)];
+    circpnts=(max(RefIndentDiag)*distFactor)/2*[cos(theta) sin(theta)];
     patch(circpnts(:,1)+p(j,1),...
         circpnts(:,2)+p(j,2),[0.5 0.5 0.5]);
     %debug
@@ -419,7 +419,7 @@ for j=1:length(s_pnt)
 end
 
 for j=1:length(new_s_pnt)
-    circpnts=(min(RefIndentDiag.*distFactor))/2*[cos(theta) sin(theta)];
+    circpnts=(min(RefIndentDiag)*distFactor)/2*[cos(theta) sin(theta)];
     patch(circpnts(:,1)+p(new_s_pnt(j)+os_pnt,1),...
         circpnts(:,2)+p(new_s_pnt(j)+os_pnt,2),[1 0.5 0.5]);
 end

@@ -1,6 +1,6 @@
 %writeDuraRows  writes an .spe file to be read into ecosWorkFlow
 %   writeDuraRows(P,F) will write the Nx2 matrix of x & y coordinates
-%   to file targetted with string F with defaults HV 1/20x objective.
+%   to file targeted with string F with defaults HV 1/20x objective.
 %
 %   writeDuraRows(P,F,M) will do the same as the above with string M
 %   representing the method (ie 'HV 1', 'HV 0.5' etc).
