@@ -30,8 +30,12 @@
 %   
 %   See below for other script variables/parameters.
 %
-%   Requires writeDuraRows.m, distmesh2D (and its dependencies),
-%   xml2struct.m, respace_equally.m, inpoly.m available on the PATH 
+%   Requires writeDuraRows.m, clipper.mexw64, xml2struct.m, 
+%   respace_equally.m, inpoly.m, distmesh2D (and its dependencies)
+%       -dpoly.m
+%       -huniform.m
+%       -simpqual.m
+%       -dsegment.mexw64
 %
 %   See also distmesh2D
 %   
@@ -46,13 +50,13 @@ clc
 %%Change script variables here
 distFactor=3; %default
 seed=2; %mm, or set seed=int8(number of seeds)
-Prefix='MyPrefix';
-speOut=strcat('SomeDirectory\',Prefix); %path & prefix of new spe
-RefIndent='MyReference.spe'; %reference indents spe file
-PeriOutline='SomeDirectory\PerimeterOutline.txt';
-DomainOutline='SomeDirectory\DomainOutline.txt';
-AddPoints='SomeDirectory\Already_done.txt'; %if not a valid file, it will be ignored.
-AddPointsLoad=1; %load at which the additional points were performed
+Prefix='DemoReprocessor';
+speOut=strcat('Programs\',Prefix); %path & prefix of new spe
+RefIndent='Results_Outlines\TryReorient.spe';
+PeriOutline='Results_Outlines\OverviewOutline_Conv.txt';
+DomainOutline='Results_Outlines\EvaluationOutline_Conv.txt';
+AddPoints='Results_Outlines\Already_done.txt';
+AddPointsLoad=1;
 demo=0; %make equal to 1 or true to see indent sequence
 doOver=1; %if true, it will only load the contents of <Prefix>_setup.mat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
