@@ -44,12 +44,14 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
-NumRefiningPnts=25;
-Prefix='MyPrefix';
-speOut=strcat('SomeLocalDirectory\',Prefix); %path & prefix of new spe
-LastRunWorkspace='SomeWorkspace.mat';
-LastRunResults='SomeLocalDirectory\SomeResults.spe';
-RefLoc='MyResultsFile.txt'; %change to valid path/file name accordingly.
+NumRefiningPnts=150;
+Prefix='ICAM13M2';
+speOut=strcat('Programs\',Prefix); %path & prefix of new spe
+% LastRunWorkspace='ICAM13M2_meshed_setup.mat';
+LastRunWorkspace='ICAM13M2_1_setup.mat';
+% LastRunResults='Results_Outlines\ICAM13M2_meshed - 5.11.2015 20h7min37s.spe';
+LastRunResults='Results_Outlines\ICAM13M2_1 - 13.11.2015 18h21min47s.spe';
+RefLoc='Results_Outlines\Relocation_1.txt'; %change to valid path/file name accordingly.
 %demo=1; %only use for debugging
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -143,16 +145,19 @@ if Moved %then translate everything to the new coordinate system
     LastRunLocPrime=R*LastRunLoc'+repmat(T,1,size(LastRunLoc,1));
     LastRunLoc=LastRunLocPrime'; 
     P_outlinePrime=R*P_outline'+repmat(T,1,size(P_outline,1));
-    P_outline=P_outlinePrime';
+    P_outline=P_outlinePrime'; %global outline
     D_outlinePrime=R*D_outline'+repmat(T,1,size(D_outline,1));
-    D_outline=D_outlinePrime';
+    D_outline=D_outlinePrime'; %domains
+    bPrime=R*[xOff yOff]'+repmat(T,1,size([xOff yOff],1)); %boundaries
+    bPrime=bPrime';
+    xOff=bPrime(:,1);yOff=bPrime(:,2);
     RefIndentLocPrime=R*RefIndentLoc'+repmat(T,1,size(RefIndentLoc,1));
     RefIndentLoc=RefIndentLocPrime'; %for subsequent analyses
     if exist('AddPntsLoc','var')
         AddPntLocPrime=R*AddPntsLoc'+repmat(T,1,size(AddPntsLoc,1));
         AddPntsLoc=AddPntLocPrime'; clear AddPntLocPrime
     end
-    clear LastRunLocPrime P_outlinePrime D_outlinePrime RefIndentLocPrime pPrime
+    clear LastRunLocPrime P_outlinePrime D_outlinePrime RefIndentLocPrime pPrime bPrime
 end
     
 %reorder the Results so that they correspond to the current working mesh.
@@ -170,18 +175,18 @@ else
     s_pnt=[s_pnt{1} s_pnt{end}]; %turn the cell into an array
 end
 
-%plot the inter/extrapolated result of the last run
+%plot the inter/extrapolated result of the last run; change to D_outline
 p_spread=512;
-length_x=max(P_outline(:,1))-min(P_outline(:,1));
-length_y=max(P_outline(:,2))-min(P_outline(:,2));
+length_x=max(D_outline(:,1))-min(D_outline(:,1));
+length_y=max(D_outline(:,2))-min(D_outline(:,2));
 if length_x>length_y
     interp_length=length_x/p_spread;
 else
     interp_length=length_y/p_spread;
 end
     
-x=linspace(min(P_outline(:,1)),max(P_outline(:,1)),round(length_x/interp_length));
-y=linspace(min(P_outline(:,2)),max(P_outline(:,2)),round(length_y/interp_length));
+x=linspace(min(D_outline(:,1)),max(D_outline(:,1)),round(length_x/interp_length));
+y=linspace(min(D_outline(:,2)),max(D_outline(:,2)),round(length_y/interp_length));
 if exist('AddPntsLoc','var')==true
     allpnts=[p; RefIndentLoc; AddPntsLoc];
     allHV=[ResultHV;RefIndentHV;AddPntsHV];
@@ -190,12 +195,12 @@ else
     allHV=[ResultHV;RefIndentHV;AddPntsHV];
 end
 [zg,xg,yg]=gridfit(allpnts(:,1),allpnts(:,2),allHV,x,y);
-in_fit=inpoly([reshape(xg,numel(xg),1) reshape(yg,numel(yg),1)],P_outline(:,1:2));
+in_fit=inpoly([reshape(xg,numel(xg),1) reshape(yg,numel(yg),1)],D_outline(:,1:2));
 zg(~in_fit)=NaN;
 
 figure('name','Current results');
 h=surf(xg,yg,zg); shading flat; hold on;
-plot3(p(:,1),p(:,2),ones(size(p(:,1)))+max(ResultHV)+5,'kx');
+plot3(p(:,1),p(:,2),ones(size(p(:,1)))+max(ResultHV)+5,'kx','markersize',2);
 plot3(P_outline(:,1),P_outline(:,2),ones(size(P_outline(:,1)))+max(ResultHV)+5,'k--',...
     'linewidth',1);
 caxis([min(ResultHV) max(ResultHV)]);
@@ -270,7 +275,7 @@ figure(1)
 [newP,newT]=distmesh2d(@dpoly,@huniform,h0*1.5,bbox,[p;RefinementPnts],[xOff yOff]);
 %}
 
-figure(2)
+
 %prime while loop
 added=true(1,NumRefiningPnts);
 refining=true;
@@ -338,6 +343,7 @@ while refining
         if addRefinementPnt
             p(end+1,:)=P(NormInd(j),:);
             ThesePointsGetAdded(i,:)=P(NormInd(j),:);
+            PredictedNewDiag(i)=local_maxDiag;
             i=i+1;
             t=[t;
                 currEl(1) currEl(2) size(p,1);
@@ -361,17 +367,13 @@ while refining
 
 end %while true
 
-% Find all edges in mesh, note internal edges are repeated
-F=TR.ConnectivityList;
-E = sort([F(:,1) F(:,2); F(:,2) F(:,3); F(:,3) F(:,1)]')';
-% determine uniqueness of edges
-[u,m,n] = unique(E,'rows');
-% determine counts for each unique edge
-counts = accumarray(n(:), 1);
-% extract edges that only occurred once
-O = u(counts==1,:);
-dt = delaunayTriangulation(p(:,1),p(:,2),O);
-
+%Owed to some failures in meshing with matlab's delaunayTriangulation, the
+%'old' method is being used to refine the mesh.
+dt=delaunayn(p); %calculate delaunay
+pmid=(p(dt(:,1),:)+p(dt(:,2),:)+p(dt(:,3),:))/3; %get centroids of triangles
+in=inpoly(pmid,[xOff yOff]); %get index that are inside the outline
+dt=dt(in,:); %delete elements outside
+    
 %now minimize distance between the refinement points
 %create local entries to s_pnt
 os_pnt=length(s_pnt); %original length of s_pnt
@@ -393,7 +395,11 @@ for j=2:size(ThesePointsGetAdded,1)
 %             'horizontalalignment','center')
 end
 
-
+if Moved 
+    figure(3)
+else
+    figure(2)
+end
 for j=1:size(p,1)
     circpnts=(max(RefIndentDiag)*distFactor)/2*[cos(theta) sin(theta)];
     patch(circpnts(:,1)+p(j,1),...
@@ -409,7 +415,7 @@ end
 
 figure('name','Refined mesh');
 plot(P_outline(:,1),P_outline(:,2),'k--'); hold on;
-IO=isInterior(dt); t=dt.ConnectivityList(IO,:);
+t=dt; %write t as adjusted mesh dt
 plottedMesh=patch('vertices',p,'faces',t,'edgecol','w','facecol',[.8,.9,1]);
 plot([p(O(:,1),1) p(O(:,2),1)]',[p(O(:,1),2) p(O(:,2),2)]','k-');
 for j=1:length(s_pnt)
@@ -419,7 +425,7 @@ for j=1:length(s_pnt)
 end
 
 for j=1:length(new_s_pnt)
-    circpnts=(min(RefIndentDiag)*distFactor)/2*[cos(theta) sin(theta)];
+    circpnts=(PredictedNewDiag(new_s_pnt(j))*distFactor)/2*[cos(theta) sin(theta)];
     patch(circpnts(:,1)+p(new_s_pnt(j)+os_pnt,1),...
         circpnts(:,2)+p(new_s_pnt(j)+os_pnt,2),[1 0.5 0.5]);
 end
@@ -462,5 +468,6 @@ if exist('export_fig','file')==2
     else
         figure(1);
     end
-    export_fig(sprintf('Output%d.png',iterations-1),'-a2','-m2')
+    axis([min(xOff) max(xOff) min(yOff) max(yOff)]);
+    export_fig(sprintf('Output%d.png',iterations-1),'-a2','-m3')
 end
