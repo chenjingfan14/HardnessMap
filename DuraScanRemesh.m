@@ -191,8 +191,8 @@ if exist('AddPntsLoc','var')==true
     allpnts=[p; RefIndentLoc; AddPntsLoc];
     allHV=[ResultHV;RefIndentHV;AddPntsHV];
 else
-    allpnts=[p; RefIndentLoc; AddPntsLoc];
-    allHV=[ResultHV;RefIndentHV;AddPntsHV];
+    allpnts=[p; RefIndentLoc];
+    allHV=[ResultHV;RefIndentHV];
 end
 [zg,xg,yg]=gridfit(allpnts(:,1),allpnts(:,2),allHV,x,y);
 in_fit=inpoly([reshape(xg,numel(xg),1) reshape(yg,numel(yg),1)],D_outline(:,1:2));
@@ -417,7 +417,7 @@ figure('name','Refined mesh');
 plot(P_outline(:,1),P_outline(:,2),'k--'); hold on;
 t=dt; %write t as adjusted mesh dt
 plottedMesh=patch('vertices',p,'faces',t,'edgecol','w','facecol',[.8,.9,1]);
-plot([p(O(:,1),1) p(O(:,2),1)]',[p(O(:,1),2) p(O(:,2),2)]','k-');
+
 for j=1:length(s_pnt)
     circpnts=(ResultDiag(j).*distFactor)/2*[cos(theta) sin(theta)];
     patch(circpnts(:,1)+p(j,1),...

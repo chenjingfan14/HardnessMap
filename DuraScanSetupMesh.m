@@ -24,7 +24,7 @@
 %   Requires a reference .spe file containing the results of the setup
 %   indents
 %   Requires a perimeter/profile file in .txt format, whitespace delimited,
-%   one point per row. Order is not important.
+%   one point per row. Order is either cw or ccw.
 %   Requires a local (or domain) outline in the same format as the
 %   perimeter. This outline will be meshed.
 %   
@@ -35,6 +35,8 @@
 %       -dpoly.m
 %       -huniform.m
 %       -simpqual.m
+%       -fixmesh.m
+%       -simpvol.m
 %       -dsegment.mexw64
 %
 %   See also distmesh2D
@@ -49,7 +51,7 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 distFactor=3; %default
-seed=2; %mm, or set seed=int8(number of seeds)
+seed=2; %mm, or set seed=int16(number of seeds)
 Prefix='DemoReprocessor';
 speOut=strcat('Programs\',Prefix); %path & prefix of new spe
 RefIndent='Results_Outlines\TryReorient.spe';
@@ -58,7 +60,7 @@ DomainOutline='Results_Outlines\EvaluationOutline_Conv.txt';
 AddPoints='Results_Outlines\Already_done.txt';
 AddPointsLoad=1;
 demo=0; %make equal to 1 or true to see indent sequence
-doOver=1; %if true, it will only load the contents of <Prefix>_setup.mat
+doOver=1; %if false, it will only load the contents of <Prefix>_setup.mat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if doOver && exist(strcat(Prefix,'_setup.mat'),'file')==2
