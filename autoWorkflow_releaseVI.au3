@@ -82,8 +82,10 @@ While 1
 
 			For $i = 1 to $filenames[0]
 				for $j = 1 to $it
-				if StringLeft($filenames[$i], StringLen($pref_gui & "_" & String($i))) = $pref_gui & "_" & String($j) Then
+				if StringLeft($filenames[$i], StringLen($pref_gui & "_" & String($j))) = $pref_gui & "_" & String($j) Then
 					$runCount+=1
+					;Need to fix this!!!
+					; ConsoleWrite("Compared " & StringLeft($filenames[$i], StringLen($pref_gui & "_" & String($j))) & "   " & $pref_gui & "_" & String($j) & @CRLF)
 					ConsoleWrite("Found results for run: "& $runCount & "   " & $filenames[$i] & @CRLF)
 				
 				EndIf
@@ -175,11 +177,16 @@ Func RunEcos($pp,$op,$pref)
 		if $check = 1 Then
 			WinSetState($hWnd, "", @SW_RESTORE )
 			$success = ControlClick ($hWnd, "", "[NAME:btnLoadPattern]", "Left")
-			ConsoleWrite("Clicked: " & $success & $check & @CRLF)
-			WinWait("Open","",500)
-			Send($spath)
-			Send("{ENTER}")
-			Send("{ENTER}")
+			ConsoleWrite("Started ecos Workflow & clicked first button (1 successful) " & $success & @CRLF)
+			WinWait("Open","",1500)
+			;fix from this point on
+			$oWnd = WinGetHandle("Open", "")
+			ControlSend($oWnd, "", "[CLASS:Edit; INSTANCE:1]", $spath)
+			Sleep(500)
+			ControlClick($oWnd, "", "[CLASS:Button; INSTANCE:1]", "")
+			Sleep(500)
+			$bWnd = WinGetHandle("Browse For Folder", "")
+			ControlClick($bWnd, "", "[CLASS:Button; INSTANCE:2]", "")
 			Sleep(1000)
 			Global $CurrentRunResultsFileName = ControlGetText ( $hWnd, "", "[NAME:tbSpecimenName]" )
 			$success = ControlClick ($hWnd, "", "[NAME:pbNextTPSpecimen]", "Left")
@@ -193,7 +200,7 @@ Func RunEcos($pp,$op,$pref)
 			ConsoleWrite("RUNNING . . . " & @CRLF)
 			
 			;; Do a winwait for the messagebox identifying that the test has completed ;;
-			WinWait("Info","",1000)
+			WinWait("Info","","")
 			$success = ControlClick ("Info", "","Button1", "Left")
 			ConsoleWrite("info: " & $success & @CRLF)
 			;; Check what the iteration count is ;;

@@ -440,6 +440,11 @@ else
         'ResultHV','ResultDiag','distFactor','iterations');
 end
 
+%for more complicated images, these may take time to render.
+%export_fig errors have been noted when MATLAB is running headless
+%as a fix, a pause is put in to let the figures render before calling export_fig
+
+pause(20) %pause for 20 seconds
 
 %save output figure from last run
 if exist('export_fig','file')==2
