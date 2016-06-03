@@ -2,12 +2,12 @@ import os, shutil
 
 myFiles = []
 
-NewPath=os.path.normpath("D:/Specimen/Matt_Roy/Vahid_Hosseini/LongArcDualPhase_Images")
+NewPath=os.path.normpath("C:/FullFileTargetPath")
 
-BasePath=os.path.normpath("C:/Data/Images/")
+BasePath=os.path.normpath("C:/FullExistingTargetPath")
 
 # iterate through all the lines
-for line in open('LongArcDualPhase.spe').readlines():
+for line in open('MyTargetResultsFile.spe').readlines():
     # skip this line if it doesn't look like an assignment
 	if not BasePath in line: continue
 	
@@ -19,7 +19,7 @@ for line in open('LongArcDualPhase.spe').readlines():
 		myFiles.append(left)
 
 for entry in myFiles:
-	#Copy the other photos:
+	#Copy the other photos, change trailing file names b/c of split op
 	#File name ends in '_Result.jpg', change to '_Result_Thumb.jpg' to each
 	#File name ends in 'x_Result.jpg', need to change to 'x.jpg'
 	thumb = entry.replace('_Result.jpg','_Result_Thumb.jpg')
