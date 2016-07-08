@@ -36,7 +36,7 @@
 %   See also export_fig
 %   
 %   Copyright 2015-2016 M. J. Roy
-%   $Revision: 1.0$  $Date: 2016/03/13$
+%   $Revision: 1.1$  $Date: 2016/07/08$
 
 close all
 clear all
@@ -45,12 +45,12 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 NumRefiningPnts=150;
-Prefix='ICAM13M2';
+Prefix='AlAlloy';
 speOut=strcat('Programs\',Prefix); %local path & prefix of new spe
 % LastRunWorkspace='SomeSampleName_meshed_setup.mat';
-LastRunWorkspace='SomeSampleName_1_setup.mat';
+LastRunWorkspace='AlAlloy_setup.mat';
 % LastRunResults='Results_Outlines\SomeSampleName_meshed - 5.11.2015 20h7min37s.spe';
-LastRunResults='Results_Outlines\SomeSampleName_1 - 13.11.2015 18h21min47s.spe';
+LastRunResults='Results_Outlines\AlAlloy - 14.3.2016 16h45min25s.spe';
 RefLoc='Results_Outlines\Relocation_1.txt'; %change to valid path/file name accordingly.
 debug=0; %set to be true to highlight regions that are being considered for remapping.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,7 +138,8 @@ for j=1:length(Results.Specimen.Row.Point)
     LastRunDiag(j,1)=str2double...
         (Results.Specimen.Row.Point{j}.Diag.Text);
 end
-Method=Results.Specimen.Row.Point{1}.Method.Text; %for caxis label
+Method=Results.Specimen.Row.Point{1}.Method.Text; %for caxis label & writeDuraRows
+ObjectiveString=Results.Specimen.Row.Point{1}.Objective.Text; %for writeDuraRows
 if Moved %then translate everything to the new coordinate system
     pPrime=R*p'+repmat(T,1,size(p,1));
     p=pPrime'; 
@@ -431,7 +432,9 @@ else
     iterations=iterations+1;
 end
 writeDuraRows(p(new_s_pnt+os_pnt,:),...
-    strcat(speOut,'_',num2str(iterations),'.spe'));
+    strcat(speOut,'_',num2str(iterations),'.spe'),...
+    Method,...
+    ObjectiveString);
 
 %write a new workspace, dealing with multiplicity via cells
 s_pnt={s_pnt new_s_pnt};
@@ -458,6 +461,6 @@ if exist('export_fig','file')==2
     else
         figure(1);
     end
-    axis([min(xOff) max(xOff) min(yOff) max(yOff)]);
+    axis([min(xOff)*0.95 max(xOff)*1.05 min(yOff)*0.95 max(yOff)*1.05]);
     export_fig(sprintf('Output%d.png',iterations-1),'-a2','-m3')
 end

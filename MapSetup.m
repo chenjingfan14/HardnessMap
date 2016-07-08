@@ -28,6 +28,10 @@
 %   Requires a local (or domain) outline in the same format as the
 %   perimeter. This outline will be meshed.
 %   
+%   OPTIONAL additional hardness points in a .txt format, whitespace
+%   delimited, one indent per row in the form of x position y position
+%   hardness in mm & N/mm^2. If this file is not found, then it will not
+%   be processed.
 %   See below for other script variables/parameters.
 %
 %   Requires writeDuraRows.m, clipper.mexw64, xml2struct.m, 
@@ -42,7 +46,7 @@
 %   See also distmesh2D
 %   
 %   Copyright 2015 M. J. Roy
-%   $Revision: 1.0$  $Date: 2015/10/30$
+%   $Revision: 1.1$  $Date: 2016/07/08$
 
 close all
 clear all
@@ -51,14 +55,16 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 distFactor=3; %default
-seed=2; %mm, or set seed=int16(number of seeds)
-Prefix='DemoReprocessor';
+Load='0.2'; %load in kilograms
+Obj='40x'; %objective to use
+seed=1; %mm, or set seed=int16(number of seeds)
+Prefix='AlAlloy';
 speOut=strcat('Programs\',Prefix); %path & prefix of new spe
-RefIndent='Results_Outlines\TryReorient.spe';
-PeriOutline='Results_Outlines\OverviewOutline_Conv.txt';
-DomainOutline='Results_Outlines\EvaluationOutline_Conv.txt';
-AddPoints='Results_Outlines\Already_done.txt';
-AddPointsLoad=1;
+RefIndent='Results_Outlines\RefLoc.spe';
+PeriOutline='Results_Outlines\Overview_Outline.txt';
+DomainOutline='Results_Outlines\Evaluation_Outline.txt';
+AddPoints='Results_Outlines\Already_done.txt'; 
+AddPointsLoad=1; %Load that was used to perform additional points
 demo=0; %make equal to 1 or true to see indent sequence
 doOver=1; %if false, it will only load the contents of <Prefix>_setup.mat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -66,15 +72,14 @@ doOver=1; %if false, it will only load the contents of <Prefix>_setup.mat
 if doOver && exist(strcat(Prefix,'_setup.mat'),'file')==2
     delete(strcat(Prefix,'_setup.mat'));
 end
-
+ap=false;%additional points is false until flipped true
 if exist(strcat(Prefix,'_setup.mat'),'file')~=2
 
-    %read in profiles
-    P_outline=dlmread(PeriOutline);
-    D_outline=dlmread(DomainOutline);
+    %read in profiles & connect them
+    P_outline=dlmread(PeriOutline); P_outline(end+1,:)=P_outline(1,:);
+    D_outline=dlmread(DomainOutline); D_outline(end+1,:)=D_outline(1,:);
     
     %check for additional points
-    ap=false;%flag for subsequent analysis
     if exist(AddPoints,'file')==2 %if a valid file is found
         fprintf('Accounting for existing indents beyond reference ...\n');
         ap=true; 
@@ -136,11 +141,14 @@ if exist(strcat(Prefix,'_setup.mat'),'file')~=2
     %have to convert to int64 for clipper, use an arbitrary scaling factor
     scale=2^15;
     %offset the outline by the largest indent diagonal in the reference
-    %points
+    %points, correct for differences in load, for example reference indents
+    %may have been performed with a higher load
     if ~ap %no additional points
-        Offset=max(RefIndentDiag.*distFactor);
+        OffsetHV=min(RefIndentHV);
+        Offset=distFactor*(sqrt(1.8544*str2double(Load)/OffsetHV));
     else
-        Offset=max([RefIndentDiag;AddPntsDiag].*distFactor);
+        OffsetHV=min([RefIndentHV;AddPntsHV]);
+        Offset=distFactor*(sqrt(1.8544*str2double(Load)/OffsetHV));
     end
     Inpol.x=int64(D_outline(:,1)*scale); Inpol.y=int64(D_outline(:,2)*scale);
     Outpol=clipper(Inpol,-Offset*scale,1);
@@ -303,4 +311,6 @@ end %if the setup file exists and redo isn't true
 
 %write a programme
 writeDuraRows(p(s_pnt,:),...
-    strcat(speOut,'.spe'));
+    strcat(speOut,'.spe'),...
+    Load,...
+    Obj);

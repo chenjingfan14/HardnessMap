@@ -18,14 +18,14 @@ $RunButton = GUICtrlCreateButton("Run", 17, 19, 113, 25)
 $ExitButton = GUICtrlCreateButton("Stop", 257, 19, 113, 25)
 GUICtrlSetFont(-1, 8, 800, 0, "MS Sans Serif")
 
-$WorkingDirectory = GUICtrlCreateInput("", 18, 76, 353, 21)
-$ProgramPath=GUICtrlCreateInput("", 18, 128, 353, 21)
-$OutlinePath = GUICtrlCreateInput("", 16, 176, 353, 21)
-$RelocatePath = GUICtrlCreateInput("", 16, 232, 353, 21)
+$WorkingDirectory = GUICtrlCreateInput("D:\Documents\Hardness\Fix", 18, 76, 353, 21)
+$ProgramPath=GUICtrlCreateInput("D:\Documents\Hardness\Fix\Programs", 18, 128, 353, 21)
+$OutlinePath = GUICtrlCreateInput("D:\Documents\Hardness\Fix\Results", 16, 176, 353, 21)
+$RelocatePath = GUICtrlCreateInput("D:\Documents\Hardness\Fix\Results\refindents.txt", 16, 232, 353, 21)
 
-$Prefix= GUICtrlCreateInput("", 16, 272, 145, 21)
-$Iter = GUICtrlCreateInput("", 184, 272, 81, 21)
-$nRp = GUICtrlCreateInput("", 288, 272, 81, 21)
+$Prefix= GUICtrlCreateInput("something", 16, 272, 145, 21)
+$Iter = GUICtrlCreateInput("7", 184, 272, 81, 21)
+$nRp = GUICtrlCreateInput("120", 288, 272, 81, 21)
 
 $XMLDefault = GUICtrlCreateInput("D:\Specimen", 16, 456, 353, 21)
 
@@ -38,8 +38,7 @@ $Label3 = GUICtrlCreateLabel("XML path (Change under settings > General Settings
 $Label4 = GUICtrlCreateLabel("Working directory", 18, 52, 87, 17)
 $Label5 = GUICtrlCreateLabel("Full path to re-orientation points *.txt file", 16, 208, 188, 17)
 $Label6 = GUICtrlCreateLabel("Refining points", 288, 256, 74, 17)
-$Label7 = GUICtrlCreateLabel("Change load and objective in writeDuraRows.m", 24, 320, 329, 20)
-GUICtrlSetFont(-1, 10, 800, 0, "MS Sans Serif")
+
 GUICtrlSetColor(-1, 0x000000)
 GUISetState(@SW_SHOW)
 #EndRegion ### END Koda GUI section ###
@@ -188,17 +187,12 @@ Func RunEcos($pp,$op,$pref)
 			$success = ControlClick ($hWnd, "", "[NAME:btnLoadPattern]", "Left")
 			ConsoleWrite("Started ecos Workflow & clicked first button (1 successful) " & $success & @CRLF)
 			WinWait("Open","",1500)
-			;fix from this point on
+
 			$oWnd = WinGetHandle("Open", "")
 			ControlSend($oWnd, "", "[CLASS:Edit; INSTANCE:1]", $spath & "{ENTER}")
 			Sleep(1000)
 			Send("{ENTER}")
-			; WinWait("Browse for Folder", "", 1500)
-			; $BforFWnd =WinGetHandle("Browse For Folder", "")
-			
-			; $success= ControlClick ($BforFWnd, "", "[CLASS:Button; INSTANCE:2]", "Left")
-			; ConsoleWrite("BrowseForFolder" & $success & @CRLF)
-;			Sleep(1000)
+
 			Global $CurrentRunResultsFileName = ControlGetText ( $hWnd, "", "[NAME:tbSpecimenName]" )
 			$success = ControlClick ($hWnd, "", "[NAME:pbNextTPSpecimen]", "Left")
 			ConsoleWrite("SpecimenLoad: " & $success & @CRLF)

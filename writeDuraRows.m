@@ -10,7 +10,7 @@
 %
 %   
 %   Copyright 2015 M. J. Roy
-%   $Revision: 1.0$  $Date: 2015/10/30$
+%   $Revision: 1.1$  $Date: 2016/07/08$
 
 function writeDuraRows(varargin)
 if length(varargin)<2 || length(varargin)>5
@@ -21,6 +21,12 @@ p=varargin{1};
 fname=varargin{2};
 if length(varargin)>2
     HVstr=varargin{3};
+    %check if there's a decimal in the string, if there is, convert to
+    %comma
+    [lead,trail]=strtok(HVstr,'.');
+    if ~isempty(trail)
+        HVstr=strcat(lead,',',trail(2:end));
+    end
 else
     HVstr='HV 1';
 end
