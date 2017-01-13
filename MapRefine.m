@@ -138,8 +138,10 @@ for j=1:length(Results.Specimen.Row.Point)
     LastRunDiag(j,1)=str2double...
         (Results.Specimen.Row.Point{j}.Diag.Text);
 end
-Method=Results.Specimen.Row.Point{1}.Method.Text; %for caxis label & writeDuraRows
-ObjectiveString=Results.Specimen.Row.Point{1}.Objective.Text; %for writeDuraRows
+%for caxis label & writeDuraRows
+Method=Results.Specimen.Row.Point{1}.Method.Text; 
+%for writeDuraRows (expects a string object)
+ObjectiveString=Results.Specimen.Row.Point{1}.Objective.Text; 
 if Moved %then translate everything to the new coordinate system
     pPrime=R*p'+repmat(T,1,size(p,1));
     p=pPrime'; 

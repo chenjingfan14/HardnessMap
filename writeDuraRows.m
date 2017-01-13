@@ -25,9 +25,9 @@ if length(varargin)>2
     %comma
     [lead,trail]=strtok(HVstr,'.');
     if ~isempty(trail)
-        HVstr=['HV ' strcat(lead,',',trail(2:end))];
+        HVstr=strcat(lead,',',trail(2:end));
     else
-        HVstr=['HV ' lead];
+        HVstr=lead;
     end
 else
     HVstr='HV 1';

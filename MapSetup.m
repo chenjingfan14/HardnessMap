@@ -55,8 +55,8 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 distFactor=3; %default
-Load='0.2'; %load in kilograms
-Obj='40x'; %objective to use
+Load='0.2'; %load in kilograms, must match available loads presented in ecos
+Obj='40x'; %objective to use, must match available objectives presented in ecos
 seed=1; %mm, or set seed=int16(number of seeds)
 Prefix='AlAlloy';
 speOut=strcat('Programs\',Prefix); %path & prefix of new spe
@@ -312,5 +312,5 @@ end %if the setup file exists and redo isn't true
 %write a programme
 writeDuraRows(p(s_pnt,:),...
     strcat(speOut,'.spe'),...
-    Load,...
+    ['HV ' Load],...
     Obj);
