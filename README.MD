@@ -90,7 +90,7 @@ These scripts have been tested using:
 - ecos Workflow v2.11.0 (hardness tester control software/GUI)
 
 # Thanks
-A big thank you goes out to Per-Olof Persson for writing Distmesh and Angus Johnson for the  [Clipper Library](http://persson.berkeley.edu/distmesh/) for some really great polygon tools.
+A big thank you goes out to Per-Olof Persson for writing [Distmesh](http://persson.berkeley.edu/distmesh/) and Angus Johnson for the  [Clipper Library](http://www.angusj.com/delphi/clipper.php) for some really great polygon tools.
 
 # Disclaimer & Warning
 The code contained herein is not supported by EmcoTest or Struers or any part of their respective organisations. This repository is meant to extend functionality currently missing which may or may not be suitable for all combinations of material and equipment. Use of this code can result in a seriously damaged test facility or operator injury. Use at your own risk.
