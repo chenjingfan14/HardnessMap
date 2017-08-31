@@ -44,14 +44,16 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
-NumRefiningPnts=150;
-Prefix='AlAlloy';
-speOut=strcat('Programs\',Prefix); %local path & prefix of new spe
+NumRefiningPnts=750; 
+Filter = [180 780]; %low and high values of hardness to ignore and delete from existing mesh
+Prefix='exPrefix';
+speOut=strcat('examplePrograms\',Prefix); %local path & prefix of new spe
 % LastRunWorkspace='SomeSampleName_meshed_setup.mat';
-LastRunWorkspace='AlAlloy_setup.mat';
+LastRunWorkspace='exPrefix_setup.mat';
 % LastRunResults='Results_Outlines\SomeSampleName_meshed - 5.11.2015 20h7min37s.spe';
-LastRunResults='Results_Outlines\AlAlloy - 14.3.2016 16h45min25s.spe';
-RefLoc='Results_Outlines\Relocation_1.txt'; %change to valid path/file name accordingly.
+LastRunResults='exampleData\exPrefix - XX.X.XXXX XXhXXminXs.spe';
+RefLoc='exampleData\Relocation_1.txt'; %change to valid path/file name accordingly.
+DefectLoc='exampleData\Defects.txt'; %areas that will be ignored; mandatory even if blank file
 debug=0; %set to be true to highlight regions that are being considered for remapping.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -60,6 +62,9 @@ Iterate=false;
 Moved=false;
 
 Results=xml2struct(LastRunResults);
+%Annotation constant
+theta  = (-pi:pi/12:pi)'; %discretized unit circle
+
 
 %check if this is the first run since the reference run
 %this will be true if there aren't any Result* variables in the loaded
@@ -77,9 +82,8 @@ if exist(RefLoc,'file')==2
     axis equal
     plot(l_Datum(:,1),l_Datum(:,2),'ro');
     ax=axis;
-    %annotation offset on y
-    Annot_off_y=(ax(4)-ax(3))*.02;
-    for j=1:size(RefIndentLoc,1)
+    Annot_off_y=(ax(4)-ax(3))*.02;%annotation offset on y
+    for j=1:size(RefIndentLoc,1)    
         text(RefIndentLoc(j,1),RefIndentLoc(j,2)-Annot_off_y,3,...
         num2str(j),'FontSize',8,'Color',[0.5 0.5 0.5],...
         'horizontalalignment','center')
@@ -118,6 +122,37 @@ else
     fprintf('Assuming that the specimen hasn''t moved since the last run\n')
 end
 
+%check if there's 'defects', which will be read in from the previous
+%workspace so only execute if this is the first time refinement is being
+%run
+if exist(DefectLoc,'file')==2 & ~Iterate 
+    def=ReadDefectFile(DefectLoc);
+    def=cell2mat(def);
+    %step through rows, looking for row of nans
+    dcount=1;
+    pcount=1;
+    ld=[];
+    Def_outline={};
+    for j=1:size(def,1)
+       if isnan(def(j,:) )
+           ld=[ld; ld(1,:)];
+           %increment defect counter, reset local defect counters
+           Def_outline{dcount}=ld;
+           dcount=dcount+1;
+           pcount=1;
+           ld=[];
+       else
+           if isempty(ld)
+               ld=def(j,:);
+           else
+           ld=[ld; def(j,:)];
+           end
+           pcount=pcount+1;
+       end
+
+    end
+end
+    
 
 % if ~Iterate %then this is the first read after the first run
 % get locations, hardness and diagonal
@@ -138,6 +173,37 @@ for j=1:length(Results.Specimen.Row.Point)
     LastRunDiag(j,1)=str2double...
         (Results.Specimen.Row.Point{j}.Diag.Text);
 end
+
+%Apply filter for both defects and filtered values
+%start by adding points outside of the filter as being 'defects'
+f_ind=LastRunHV>Filter(2) | LastRunHV<Filter(1);
+
+if f_ind
+    FilteredLoc=LastRunLoc(f_ind,:);
+    FilteredDiag=LastRunDiag(f_ind,:);
+    i=length(Def_outline)+1;
+    for j=1:length(FilteredDiag)
+        circpnts=(mean(LastRunDiag)*distFactor)/2*[cos(theta) sin(theta)];
+        Def_outline{i}=[circpnts(:,1)+FilteredLoc(j,1),...
+            circpnts(:,2)+FilteredLoc(j,2)];
+        i=i+1;
+    end
+
+    LastRunLoc=LastRunLoc(~f_ind,:);
+    LastRunDiag=LastRunDiag(~f_ind);
+    LastRunHV=LastRunHV(~f_ind);
+
+    %update mesh
+    if ~Iterate
+        s_pnt=s_pnt(~f_ind);
+    else
+        s_pnt=s_pnt{end}(~f_ind);
+    end
+
+else
+    Def_outline={};
+end
+
 %for caxis label & writeDuraRows
 Method=Results.Specimen.Row.Point{1}.Method.Text; 
 %for writeDuraRows (expects a string object)
@@ -149,6 +215,12 @@ if Moved %then translate everything to the new coordinate system
     LastRunLoc=LastRunLocPrime'; 
     P_outlinePrime=R*P_outline'+repmat(T,1,size(P_outline,1));
     P_outline=P_outlinePrime'; %global outline
+    if ~isempty(Def_outline)
+        for j=length(Def_outline)-length(FilteredDiag):length(Def_outline)
+            Def_outlinePrime=R*Def_outline{j}'+repmat(T,1,size(Def_outline{j},1));
+            Def_outline{j}=Def_outlinePrime';
+        end
+    end
     D_outlinePrime=R*D_outline'+repmat(T,1,size(D_outline,1));
     D_outline=D_outlinePrime'; %domains
     bPrime=R*[xOff yOff]'+repmat(T,1,size([xOff yOff],1)); %boundaries
@@ -212,6 +284,8 @@ view(2); box on; axis equal; h=colorbar('SouthOutside');
 xlabel(h,sprintf('%s',Method))
 set(gca,'YDir','reverse'); set(gcf,'color','white');
 
+%retriangulate because the mesh might have nodes deleted
+t=delaunayn(p);
 
 %get 2D normals
 P=zeros(size(t,1),2);
@@ -229,7 +303,7 @@ end
 
 %plot all the same stuff as before
 %load everything from the _setup file and plot it
-theta  = (-pi:pi/12:pi)';
+
 
 if debug
     %create a figure to show the refinement process
@@ -336,11 +410,24 @@ while refining
         end
         
         if addRefinementPnt %if there was a point found, add it to p, etc.
-            added(j)=1;
-            p(end+1,:)=RefinementPnt;
-            ThesePointsGetAdded(i,:)=P(NormInd(j),:);
-            PredictedNewDiag(i)=local_maxDiag;
-            i=i+1;
+            if ~isempty{Def_outline}
+                %make sure it doesn't end up in a 'defect' site
+                for numDefects=1:length(Def_outline)
+                    [in,on]=inpoly(RefinementPnt,Def_outline{numDefects});
+                    defectTest(numDefects,:)=[in on];
+                end
+            else
+                defectTest=false;
+            end
+            if ~defectTest %%if it passed the defect test
+                added(j)=1;
+                p(end+1,:)=RefinementPnt;
+                ThesePointsGetAdded(i,:)=P(NormInd(j),:);
+                PredictedNewDiag(i)=local_maxDiag;
+                i=i+1;
+            else
+                added(j)=0; %same outcome if addRefinementPnt was not true
+            end
             
             if debug
                 patch(testArea(:,1),testArea(:,2),[0 0.85 0]); %debug
@@ -408,6 +495,16 @@ plot(P_outline(:,1),P_outline(:,2),'k--'); hold on;
 t=dt; %write t as adjusted mesh dt
 plottedMesh=patch('vertices',p,'faces',t,'edgecol','w','facecol',[.8,.9,1]);
 
+ax=axis;
+Annot_off_y=(ax(4)-ax(3))*.02;%annotation offset on y
+%plot defect outlines
+for j=1:length(Def_outline)
+    plot(Def_outline{j}(:,1),Def_outline{j}(:,2),'r-','linewidth',1);
+    text(mean(Def_outline{j}(:,1)),mean(Def_outline{j}(:,2))-Annot_off_y,3,...
+        num2str(j),'FontSize',8,'Color',[1 0 0],...
+        'horizontalalignment','center')
+end
+
 %existing points
 for j=1:length(s_pnt)
     circpnts=(ResultDiag(j).*distFactor)/2*[cos(theta) sin(theta)];
@@ -447,12 +544,12 @@ if exist('AddPntsLoc','var')==true
         'RefIndentLoc', 'RefIndentHV','RefIndentDiag',...
         'P_outline','D_outline','xOff','yOff','p','t','s_pnt',...
         'ResultHV','ResultDiag','distFactor','iterations',...
-        'AddPntsDiag','AddPntsHV','AddPntsLoc');
+        'AddPntsDiag','AddPntsHV','AddPntsLoc','Def_outline');
 else
     save(strcat(Prefix,'_',num2str(iterations),'_setup.mat'),...
         'RefIndentLoc', 'RefIndentHV','RefIndentDiag',...
         'P_outline','D_outline','xOff','yOff','p','t','s_pnt',...
-        'ResultHV','ResultDiag','distFactor','iterations');
+        'ResultHV','ResultDiag','distFactor','iterations','Def_outline');
 end
 
 

@@ -1,0 +1,417 @@
+<?xml version="1.0"?>
+<Specimen>
+  <Testtype>Series Measurement</Testtype>
+  <OCImagePath>C:\Data\Images\RefIndent_TIG130_19_7_2017_15_9_33.jpg</OCImagePath>
+  <SpecimenStartPoint>
+    <XAbs>54937</XAbs>
+    <YAbs>133821</YAbs>
+  </SpecimenStartPoint>
+  <SpecimenAngle>0</SpecimenAngle>
+  <Comment>Enter Comment (Optional)</Comment>
+  <Userfields>
+    <Userfield UserfieldID="Userfield 1">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 2">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 3">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 4">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 5">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 6">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 7">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 8">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 9">
+      <Value>
+      </Value>
+    </Userfield>
+    <Userfield UserfieldID="Userfield 10">
+      <Value>
+      </Value>
+    </Userfield>
+  </Userfields>
+  <Row RowName="Row 1">
+    <KindOfMeasurement>Vickers</KindOfMeasurement>
+    <RowAngle>357.661748019532</RowAngle>
+    <Status>
+    </Status>
+    <DateTime>7/19/2017 3:04:24 PM</DateTime>
+    <Method>HV 2</Method>
+    <Objective>20x</Objective>
+    <UseConversion>No</UseConversion>
+    <ConversionTable>
+    </ConversionTable>
+    <ConversionMaterial>
+    </ConversionMaterial>
+    <ConversionMethod>
+    </ConversionMethod>
+    <UseGeometryCorrection>No</UseGeometryCorrection>
+    <Shape>
+    </Shape>
+    <Curvature>
+    </Curvature>
+    <GeomCorrDiameter>
+    </GeomCorrDiameter>
+    <Angle>
+    </Angle>
+    <HardnessMin>0</HardnessMin>
+    <HardnessMax>0</HardnessMax>
+    <UseAutomaticIndentSpacing>No</UseAutomaticIndentSpacing>
+    <DistanceFromEdge>
+    </DistanceFromEdge>
+    <DistanceFactorAutomIndentSpacing>
+    </DistanceFactorAutomIndentSpacing>
+    <NumberOfIndents>
+    </NumberOfIndents>
+    <ZoomLevel>1</ZoomLevel>
+    <CircularLightUsed>No</CircularLightUsed>
+    <StartPoint>
+      <XAbs>75237</XAbs>
+      <YAbs>121039</YAbs>
+    </StartPoint>
+    <Point PointID="1">
+      <Hardness>191</Hardness>
+      <ImagePath>C:\Data\Images\164\19_7_2017_15_10_34_HV 2_20x_Result.jpg</ImagePath>
+      <NPX>635</NPX>
+      <NPY>245</NPY>
+      <EPX>903</EPX>
+      <EPY>513</EPY>
+      <SPX>631</SPX>
+      <SPY>781</SPY>
+      <WPX>371</WPX>
+      <WPY>517</WPY>
+      <FocusPosition>71063538</FocusPosition>
+      <Diag>0.139224670460623</Diag>
+      <Diag1>0.138705204514666</Diag1>
+      <Diag2>0.139744136406581</Diag2>
+      <Classification>
+      </Classification>
+      <Status>Measured</Status>
+      <XAbs>75237</XAbs>
+      <YAbs>121039</YAbs>
+      <XRel>0</XRel>
+      <YRel>0</YRel>
+      <DateTime>7/19/2017 3:10:40 PM</DateTime>
+      <KindOfMeasurement>Vickers</KindOfMeasurement>
+      <Method>HV 2</Method>
+      <Objective>20x</Objective>
+      <ZoomLevel>1</ZoomLevel>
+      <UseConversion>No</UseConversion>
+      <ConversionTable>
+      </ConversionTable>
+      <ConversionMaterial>
+      </ConversionMaterial>
+      <ConversionMethod>
+      </ConversionMethod>
+      <ConversionValue>
+      </ConversionValue>
+      <UseGeometryCorrection>No</UseGeometryCorrection>
+      <Shape>
+      </Shape>
+      <Curvature>
+      </Curvature>
+      <GeomCorrDiameter>
+      </GeomCorrDiameter>
+      <Angle>
+      </Angle>
+      <User>User</User>
+      <CircularLightUsed>No</CircularLightUsed>
+      <AdditionalTestpointValue1>
+      </AdditionalTestpointValue1>
+      <AdditionalTestpointValue2>
+      </AdditionalTestpointValue2>
+      <AdditionalTestpointValue3>
+      </AdditionalTestpointValue3>
+    </Point>
+    <Point PointID="2">
+      <Hardness>192</Hardness>
+      <ImagePath>C:\Data\Images\164\19_7_2017_15_11_19_HV 2_20x_Result.jpg</ImagePath>
+      <NPX>641</NPX>
+      <NPY>255</NPY>
+      <EPX>913</EPX>
+      <EPY>525</EPY>
+      <SPX>641</SPX>
+      <SPY>787</SPY>
+      <WPX>379</WPX>
+      <WPY>525</WPY>
+      <FocusPosition>71043239</FocusPosition>
+      <Diag>0.138961038961039</Diag>
+      <Diag1>0.139220779220779</Diag1>
+      <Diag2>0.138701298701299</Diag2>
+      <Classification>
+      </Classification>
+      <Status>Measured</Status>
+      <XAbs>127058</XAbs>
+      <YAbs>123155</YAbs>
+      <XRel>51.8641831806884</XRel>
+      <YRel>0</YRel>
+      <DateTime>7/19/2017 3:11:19 PM</DateTime>
+      <KindOfMeasurement>Vickers</KindOfMeasurement>
+      <Method>HV 2</Method>
+      <Objective>20x</Objective>
+      <ZoomLevel>1</ZoomLevel>
+      <UseConversion>No</UseConversion>
+      <ConversionTable>
+      </ConversionTable>
+      <ConversionMaterial>
+      </ConversionMaterial>
+      <ConversionMethod>
+      </ConversionMethod>
+      <ConversionValue>
+      </ConversionValue>
+      <UseGeometryCorrection>No</UseGeometryCorrection>
+      <Shape>
+      </Shape>
+      <Curvature>
+      </Curvature>
+      <GeomCorrDiameter>
+      </GeomCorrDiameter>
+      <Angle>
+      </Angle>
+      <User>User</User>
+      <CircularLightUsed>No</CircularLightUsed>
+      <AdditionalTestpointValue1>
+      </AdditionalTestpointValue1>
+      <AdditionalTestpointValue2>
+      </AdditionalTestpointValue2>
+      <AdditionalTestpointValue3>
+      </AdditionalTestpointValue3>
+    </Point>
+    <Point PointID="3">
+      <Hardness>200</Hardness>
+      <ImagePath>C:\Data\Images\164\19_7_2017_15_12_0_HV 2_20x_Result.jpg</ImagePath>
+      <NPX>631</NPX>
+      <NPY>263</NPY>
+      <EPX>899</EPX>
+      <EPY>519</EPY>
+      <SPX>631</SPX>
+      <SPY>785</SPY>
+      <WPX>377</WPX>
+      <WPY>519</WPY>
+      <FocusPosition>71122715</FocusPosition>
+      <Diag>0.136103896103896</Diag>
+      <Diag1>0.136103896103896</Diag1>
+      <Diag2>0.136103896103896</Diag2>
+      <Classification>
+      </Classification>
+      <Status>Measured</Status>
+      <XAbs>198501</XAbs>
+      <YAbs>123230</YAbs>
+      <XRel>123.250758191448</XRel>
+      <YRel>2.8398560233152</YRel>
+      <DateTime>7/19/2017 3:12:00 PM</DateTime>
+      <KindOfMeasurement>Vickers</KindOfMeasurement>
+      <Method>HV 2</Method>
+      <Objective>20x</Objective>
+      <ZoomLevel>1</ZoomLevel>
+      <UseConversion>No</UseConversion>
+      <ConversionTable>
+      </ConversionTable>
+      <ConversionMaterial>
+      </ConversionMaterial>
+      <ConversionMethod>
+      </ConversionMethod>
+      <ConversionValue>
+      </ConversionValue>
+      <UseGeometryCorrection>No</UseGeometryCorrection>
+      <Shape>
+      </Shape>
+      <Curvature>
+      </Curvature>
+      <GeomCorrDiameter>
+      </GeomCorrDiameter>
+      <Angle>
+      </Angle>
+      <User>User</User>
+      <CircularLightUsed>No</CircularLightUsed>
+      <AdditionalTestpointValue1>
+      </AdditionalTestpointValue1>
+      <AdditionalTestpointValue2>
+      </AdditionalTestpointValue2>
+      <AdditionalTestpointValue3>
+      </AdditionalTestpointValue3>
+    </Point>
+    <Point PointID="4">
+      <Hardness>197</Hardness>
+      <ImagePath>C:\Data\Images\164\19_7_2017_15_12_41_HV 2_20x_Result.jpg</ImagePath>
+      <NPX>633</NPX>
+      <NPY>259</NPY>
+      <EPX>903</EPX>
+      <EPY>513</EPY>
+      <SPX>635</SPX>
+      <SPY>781</SPY>
+      <WPX>373</WPX>
+      <WPY>513</WPY>
+      <FocusPosition>71281744</FocusPosition>
+      <Diag>0.137143354727736</Diag>
+      <Diag1>0.138181818181818</Diag1>
+      <Diag2>0.136104891273653</Diag2>
+      <Classification>
+      </Classification>
+      <Status>Measured</Status>
+      <XAbs>197518</XAbs>
+      <YAbs>59249</YAbs>
+      <XRel>119.658224238858</XRel>
+      <YRel>66.72747884495</YRel>
+      <DateTime>7/19/2017 3:12:42 PM</DateTime>
+      <KindOfMeasurement>Vickers</KindOfMeasurement>
+      <Method>HV 2</Method>
+      <Objective>20x</Objective>
+      <ZoomLevel>1</ZoomLevel>
+      <UseConversion>No</UseConversion>
+      <ConversionTable>
+      </ConversionTable>
+      <ConversionMaterial>
+      </ConversionMaterial>
+      <ConversionMethod>
+      </ConversionMethod>
+      <ConversionValue>
+      </ConversionValue>
+      <UseGeometryCorrection>No</UseGeometryCorrection>
+      <Shape>
+      </Shape>
+      <Curvature>
+      </Curvature>
+      <GeomCorrDiameter>
+      </GeomCorrDiameter>
+      <Angle>
+      </Angle>
+      <User>User</User>
+      <CircularLightUsed>No</CircularLightUsed>
+      <AdditionalTestpointValue1>
+      </AdditionalTestpointValue1>
+      <AdditionalTestpointValue2>
+      </AdditionalTestpointValue2>
+      <AdditionalTestpointValue3>
+      </AdditionalTestpointValue3>
+    </Point>
+    <Point PointID="5">
+      <Hardness>191</Hardness>
+      <ImagePath>C:\Data\Images\164\19_7_2017_15_13_22_HV 2_20x_Result.jpg</ImagePath>
+      <NPX>631</NPX>
+      <NPY>233</NPY>
+      <EPX>903</EPX>
+      <EPY>495</EPY>
+      <SPX>633</SPX>
+      <SPY>767</SPY>
+      <WPX>367</WPX>
+      <WPY>497</WPY>
+      <FocusPosition>71262416</FocusPosition>
+      <Diag>0.139481490472145</Diag>
+      <Diag1>0.13974122891696</Diag1>
+      <Diag2>0.139221752027329</Diag2>
+      <Classification>
+      </Classification>
+      <Status>Measured</Status>
+      <XAbs>133954</XAbs>
+      <YAbs>56167</YAbs>
+      <XRel>56.0214068132064</XRel>
+      <YRel>67.2135734183895</YRel>
+      <DateTime>7/19/2017 3:13:22 PM</DateTime>
+      <KindOfMeasurement>Vickers</KindOfMeasurement>
+      <Method>HV 2</Method>
+      <Objective>20x</Objective>
+      <ZoomLevel>1</ZoomLevel>
+      <UseConversion>No</UseConversion>
+      <ConversionTable>
+      </ConversionTable>
+      <ConversionMaterial>
+      </ConversionMaterial>
+      <ConversionMethod>
+      </ConversionMethod>
+      <ConversionValue>
+      </ConversionValue>
+      <UseGeometryCorrection>No</UseGeometryCorrection>
+      <Shape>
+      </Shape>
+      <Curvature>
+      </Curvature>
+      <GeomCorrDiameter>
+      </GeomCorrDiameter>
+      <Angle>
+      </Angle>
+      <User>User</User>
+      <CircularLightUsed>No</CircularLightUsed>
+      <AdditionalTestpointValue1>
+      </AdditionalTestpointValue1>
+      <AdditionalTestpointValue2>
+      </AdditionalTestpointValue2>
+      <AdditionalTestpointValue3>
+      </AdditionalTestpointValue3>
+    </Point>
+    <Point PointID="6">
+      <Hardness>194</Hardness>
+      <ImagePath>C:\Data\Images\164\19_7_2017_15_14_2_HV 2_20x_Result.jpg</ImagePath>
+      <NPX>637</NPX>
+      <NPY>253</NPY>
+      <EPX>911</EPX>
+      <EPY>509</EPY>
+      <SPX>637</SPX>
+      <SPY>781</SPY>
+      <WPX>377</WPX>
+      <WPY>509</WPY>
+      <FocusPosition>71314244</FocusPosition>
+      <Diag>0.138441558441559</Diag>
+      <Diag1>0.139220779220779</Diag1>
+      <Diag2>0.137662337662338</Diag2>
+      <Classification>
+      </Classification>
+      <Status>Measured</Status>
+      <XAbs>78234</XAbs>
+      <YAbs>57070</YAbs>
+      <XRel>0.384641804354642</XRel>
+      <YRel>64.0380123105202</YRel>
+      <DateTime>7/19/2017 3:14:03 PM</DateTime>
+      <KindOfMeasurement>Vickers</KindOfMeasurement>
+      <Method>HV 2</Method>
+      <Objective>20x</Objective>
+      <ZoomLevel>1</ZoomLevel>
+      <UseConversion>No</UseConversion>
+      <ConversionTable>
+      </ConversionTable>
+      <ConversionMaterial>
+      </ConversionMaterial>
+      <ConversionMethod>
+      </ConversionMethod>
+      <ConversionValue>
+      </ConversionValue>
+      <UseGeometryCorrection>No</UseGeometryCorrection>
+      <Shape>
+      </Shape>
+      <Curvature>
+      </Curvature>
+      <GeomCorrDiameter>
+      </GeomCorrDiameter>
+      <Angle>
+      </Angle>
+      <User>User</User>
+      <CircularLightUsed>No</CircularLightUsed>
+      <AdditionalTestpointValue1>
+      </AdditionalTestpointValue1>
+      <AdditionalTestpointValue2>
+      </AdditionalTestpointValue2>
+      <AdditionalTestpointValue3>
+      </AdditionalTestpointValue3>
+    </Point>
+  </Row>
+</Specimen>
