@@ -410,7 +410,7 @@ while refining
         end
         
         if addRefinementPnt %if there was a point found, add it to p, etc.
-            if ~isempty{Def_outline}
+            if ~isempty(Def_outline)
                 %make sure it doesn't end up in a 'defect' site
                 for numDefects=1:length(Def_outline)
                     [in,on]=inpoly(RefinementPnt,Def_outline{numDefects});
