@@ -51,15 +51,15 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 distFactor=3; %default
-seed=3; %mm, or set seed=int16(number of seeds)
-Prefix='exPrefix';
-speOut=strcat('examplePrograms\',Prefix); %path & prefix of new spe
-RefIndent='exampleData\RefIndent.spe';
-PeriOutline='exampleData\Outline.txt'; %to track a seperate outline
-DomainOutline='exampleData\Outline.txt'; %the outline that will be mapped
+seed=12; %mm, or set seed=int16(number of seeds)
+Prefix='Training';
+speOut=strcat('Programs\',Prefix); %path & prefix of new spe
+RefIndent='Results\Reference_Indents.spe';
+PeriOutline='Results\Outline.txt'; %to track a seperate outline
+DomainOutline='Results\Outline.txt'; %the outline that will be mapped
 AddPoints='exampleData\Already_done.txt'; %if there are already indents
 AddPointsLoad=1; %load at which these were done
-DefectLoc='exampleData\Defects.txt'; %areas that will not be mapped
+DefectLoc='Results\defects.txt'; %areas that will not be mapped
 RefLoc='Results_Outlines\Reorient1.txt'; %if it has been reoriented mid-setup
 demo=0; %make equal to 1 or true to see indent sequence
 doOver=1; %if false, it will only load the contents of <Prefix>_setup.mat

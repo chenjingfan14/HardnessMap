@@ -44,7 +44,7 @@ clc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
-NumRefiningPnts=750; 
+NumRefiningPnts=10; 
 Filter = [180 780]; %low and high values of hardness to ignore and delete from existing mesh
 Prefix='exPrefix';
 speOut=strcat('examplePrograms\',Prefix); %local path & prefix of new spe
@@ -52,7 +52,7 @@ speOut=strcat('examplePrograms\',Prefix); %local path & prefix of new spe
 LastRunWorkspace='exPrefix_setup.mat';
 % LastRunResults='Results_Outlines\SomeSampleName_meshed - 5.11.2015 20h7min37s.spe';
 LastRunResults='exampleData\exPrefix - XX.X.XXXX XXhXXminXs.spe';
-RefLoc='exampleData\Relocation_1.txt'; %change to valid path/file name accordingly.
+RefLoc='exampleData\Reorient1.txt'; %change to valid path/file name accordingly.
 DefectLoc='exampleData\Defects.txt'; %areas that will be ignored; mandatory even if blank file
 debug=0; %set to be true to highlight regions that are being considered for remapping.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,7 +178,7 @@ end
 %start by adding points outside of the filter as being 'defects'
 f_ind=LastRunHV>Filter(2) | LastRunHV<Filter(1);
 
-if f_ind
+if nnz(f_ind)>0
     FilteredLoc=LastRunLoc(f_ind,:);
     FilteredDiag=LastRunDiag(f_ind,:);
     i=length(Def_outline)+1;
@@ -189,20 +189,27 @@ if f_ind
         i=i+1;
     end
 
+    %because distances are slightly different
+    for j=1:length(f_ind)
+        if f_ind(j)==1
+            deltaLoc=[p(:,1)-LastRunLoc(f_ind(j),1) p(:,2)-LastRunLoc(f_ind(j),2)];
+            p(abs(deltaLoc(:,1))<0.0004 & abs(deltaLoc(:,2))<0.0004,:)=[];
+        end
+    end
+    
     LastRunLoc=LastRunLoc(~f_ind,:);
     LastRunDiag=LastRunDiag(~f_ind);
     LastRunHV=LastRunHV(~f_ind);
+    
 
     %update mesh
     if ~Iterate
         s_pnt=s_pnt(~f_ind);
     else
-        s_pnt=s_pnt{end}(~f_ind);
+        s_pnt{end}=s_pnt{end}(~f_ind);
     end
-
-else
-    Def_outline={};
 end
+
 
 %for caxis label & writeDuraRows
 Method=Results.Specimen.Row.Point{1}.Method.Text; 
