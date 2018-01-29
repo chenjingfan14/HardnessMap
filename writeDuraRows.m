@@ -10,7 +10,7 @@
 %
 %   
 %   Copyright 2015 M. J. Roy
-%   $Revision: 1.1$  $Date: 2016/07/08$
+%   $Revision: 1.2$  $Date: 2018/01/29$
 
 function writeDuraRows(varargin)
 if length(varargin)<2 || length(varargin)>5
@@ -29,12 +29,29 @@ if length(varargin)>2
     else
         HVstr=lead;
     end
+    
+    %make sure that the method selected is one of those supported by the
+    %DuraScan
+    valid_HVstr={'HV 0,01','HV 0,025','HV 0,05','HV 0,1','HV 0,2', ...
+        'HV 0,3', 'HV 0,5', 'HV 1', 'HV 2', 'HV 2,5', 'HV 3', 'HV 5', ...
+        'HV 10'};
+    if ~any(strcmp(valid_HVstr,HVstr))
+        disp('Invalid load specified, not writing any .spe output')
+        return
+    end
 else
     HVstr='HV 1';
 end
 
 if length(varargin)>3
     Objstr=varargin{4};
+    %make sure that the objective string is valid
+    valid_Objstr={'2.5x','10x','20x','40x','60x'};
+    if ~any(strcmp(valid_Objstr,Objstr))
+        disp('Invalid objective specified, not writing any .spe output')
+        return
+    end
+
 else
     Objstr='20x';
 end

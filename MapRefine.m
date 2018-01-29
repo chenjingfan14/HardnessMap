@@ -36,7 +36,7 @@
 %   See also export_fig
 %   
 %   Copyright 2015-2016 M. J. Roy
-%   $Revision: 1.1$  $Date: 2016/07/08$
+%   $Revision: 1.2$  $Date: 2018/01/29$
 
 close all
 clear all
@@ -45,7 +45,7 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 NumRefiningPnts=10; 
-Filter = [180 780]; %low and high values of hardness to ignore and delete from existing mesh
+Filter = [180 780]; %low and high values of hardness to ignore and delete from existing mesh; make low/high to retain all values.
 Prefix='exPrefix';
 speOut=strcat('examplePrograms\',Prefix); %local path & prefix of new spe
 % LastRunWorkspace='SomeSampleName_meshed_setup.mat';
@@ -53,7 +53,7 @@ LastRunWorkspace='exPrefix_setup.mat';
 % LastRunResults='Results_Outlines\SomeSampleName_meshed - 5.11.2015 20h7min37s.spe';
 LastRunResults='exampleData\exPrefix - XX.X.XXXX XXhXXminXs.spe';
 RefLoc='exampleData\Reorient1.txt'; %change to valid path/file name accordingly.
-DefectLoc='exampleData\Defects.txt'; %areas that will be ignored; mandatory even if blank file
+DefectLoc='exampleData\Defects1.txt'; %areas that will be ignored; mandatory even if blank file
 debug=0; %set to be true to highlight regions that are being considered for remapping.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -121,37 +121,6 @@ if exist(RefLoc,'file')==2
 else
     fprintf('Assuming that the specimen hasn''t moved since the last run\n')
 end
-
-%check if there's 'defects', which will be read in from the previous
-%workspace so only execute if this is the first time refinement is being
-%run
-if exist(DefectLoc,'file')==2 & ~Iterate 
-    def=ReadDefectFile(DefectLoc);
-    def=cell2mat(def);
-    %step through rows, looking for row of nans
-    dcount=1;
-    pcount=1;
-    ld=[];
-    Def_outline={};
-    for j=1:size(def,1)
-       if isnan(def(j,:) )
-           ld=[ld; ld(1,:)];
-           %increment defect counter, reset local defect counters
-           Def_outline{dcount}=ld;
-           dcount=dcount+1;
-           pcount=1;
-           ld=[];
-       else
-           if isempty(ld)
-               ld=def(j,:);
-           else
-           ld=[ld; def(j,:)];
-           end
-           pcount=pcount+1;
-       end
-
-    end
-end
     
 
 % if ~Iterate %then this is the first read after the first run
@@ -181,15 +150,19 @@ f_ind=LastRunHV>Filter(2) | LastRunHV<Filter(1);
 if nnz(f_ind)>0
     FilteredLoc=LastRunLoc(f_ind,:);
     FilteredDiag=LastRunDiag(f_ind,:);
+    %report to the user that it is adding filtered tested areas to defects
+    fprintf('Based on hardness filter, considering %d indentation sites as defects.\n',length(FilteredDiag));
     i=length(Def_outline)+1;
     for j=1:length(FilteredDiag)
         circpnts=(mean(LastRunDiag)*distFactor)/2*[cos(theta) sin(theta)];
         Def_outline{i}=[circpnts(:,1)+FilteredLoc(j,1),...
             circpnts(:,2)+FilteredLoc(j,2)];
         i=i+1;
+        
+        
     end
 
-    %because distances are slightly different
+    %because distances can be slightly different
     for j=1:length(f_ind)
         if f_ind(j)==1
             deltaLoc=[p(:,1)-LastRunLoc(f_ind(j),1) p(:,2)-LastRunLoc(f_ind(j),2)];
@@ -238,6 +211,12 @@ if Moved %then translate everything to the new coordinate system
     if exist('AddPntsLoc','var')
         AddPntLocPrime=R*AddPntsLoc'+repmat(T,1,size(AddPntsLoc,1));
         AddPntsLoc=AddPntLocPrime'; clear AddPntLocPrime
+    end
+    if exist('Def_outline','var')
+        for j=1:length(Def_outline)
+            DefPrime=R*Def_outline{j}'+repmat(T,1,size(Def_outline{j},1));
+            Def_outline{j}=DefPrime'; clear DefPrime
+        end %for the number of defects
     end
     clear LastRunLocPrime P_outlinePrime D_outlinePrime RefIndentLocPrime pPrime bPrime
 end

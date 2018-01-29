@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Specimen>
   <Testtype>Series Measurement</Testtype>
-  <OCImagePath>D:\Documents\Hardness\TestingFilter\Title31-Aug-2017 15:16:04.jpg</OCImagePath>
+  <OCImagePath>D:\Documents\Hardness\build\Title29-Jan-2018 16:29:56.jpg</OCImagePath>
   <SpecimenStartPoint>
     <XAbs>138754</XAbs>
     <YAbs>89508</YAbs>
@@ -51,7 +51,7 @@
       <RowAngle>0</RowAngle>
       <Status>
       </Status>
-      <DateTime>08/31/2017  3:16:04 PM</DateTime>
+      <DateTime>01/29/2018  4:29:56 PM</DateTime>
       <Method>HV 1</Method>
       <Objective>20x</Objective>
       <UseConversion>No</UseConversion>

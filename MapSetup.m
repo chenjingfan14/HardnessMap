@@ -42,7 +42,7 @@
 %   See also distmesh2D
 %   
 %   Copyright 2015 M. J. Roy
-%   $Revision: 1.0$  $Date: 2017/08/31$
+%   $Revision: 1.1$  $Date: 2018/01/29$
 
 close all
 clear all
@@ -51,16 +51,18 @@ clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Change script variables here
 distFactor=3; %default
-seed=12; %mm, or set seed=int16(number of seeds)
-Prefix='Training';
-speOut=strcat('Programs\',Prefix); %path & prefix of new spe
-RefIndent='Results\Reference_Indents.spe';
-PeriOutline='Results\Outline.txt'; %to track a seperate outline
-DomainOutline='Results\Outline.txt'; %the outline that will be mapped
+load = 'HV 1'; %string for load eg 'HV 0,5', 'HV 0,2'
+objective = '20x';%string for measuring objective eg '2.5x', '10x'
+seed=3; %mm, or set seed=int16(number of seeds)
+Prefix='exPrefix';
+speOut=strcat('examplePrograms\',Prefix); %path & prefix of new spe
+RefIndent='exampleData\RefIndent.spe';
+PeriOutline='exampleData\Outline.txt'; %to track a seperate outline
+DomainOutline='exampleData\Outline.txt'; %the outline that will be mapped
 AddPoints='exampleData\Already_done.txt'; %if there are already indents
 AddPointsLoad=1; %load at which these were done
-DefectLoc='Results\defects.txt'; %areas that will not be mapped
-RefLoc='Results_Outlines\Reorient1.txt'; %if it has been reoriented mid-setup
+DefectLoc='exampleData\defects.txt'; %areas that will not be mapped
+RefLoc='exampleData\Reorient1.txt'; %if it has been reoriented mid-setup
 demo=0; %make equal to 1 or true to see indent sequence
 doOver=1; %if false, it will only load the contents of <Prefix>_setup.mat
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,34 +80,38 @@ if exist(strcat(Prefix,'_setup.mat'),'file')~=2
     P_outline=dlmread(PeriOutline);
     D_outline=dlmread(DomainOutline);
     
-    
-    def=ReadDefectFile(DefectLoc);
+    DefectsExist=false; %flag set to process defects
+    Def_pts={};
+    if exist(DefectLoc,'file')==2 %if a valid file is found
+        DefectsExist=1;
+        def=ReadDefectFile(DefectLoc);
 
-    def=cell2mat(def);
+        def=cell2mat(def);
 
-    %step through rows, looking for row of nans
-    dcount=1;
-    pcount=1;
-    ld=[];
-    Def_outline={};
-    for j=1:size(def,1)
-       if isnan(def(j,:) )
-           ld=[ld; ld(1,:)];
-           %increment defect counter, reset local defect counters
-           Def_outline{dcount}=ld;
-           dcount=dcount+1;
-           pcount=1;
-           ld=[];
-       else
-           if isempty(ld)
-               ld=def(j,:);
+        %step through rows, looking for row of nans
+        dcount=1;
+        pcount=1;
+        ld=[];
+        Def_outline={};
+        for j=1:size(def,1)
+           if isnan(def(j,:) )
+               ld=[ld; ld(1,:)];
+               %increment defect counter, reset local defect counters
+               Def_outline{dcount}=ld;
+               dcount=dcount+1;
+               pcount=1;
+               ld=[];
            else
-           ld=[ld; def(j,:)];
+               if isempty(ld)
+                   ld=def(j,:);
+               else
+               ld=[ld; def(j,:)];
+               end
+               pcount=pcount+1;
            end
-           pcount=pcount+1;
-       end
 
-    end
+        end
+    end %if there's defects
     
     %check for additional points
     ap=false;%flag for subsequent analysis
@@ -250,22 +256,24 @@ if exist(strcat(Prefix,'_setup.mat'),'file')~=2
     else
         Offset=max([RefIndentDiag;AddPntsDiag].*distFactor);
     end
-    AllDef_pts=[];
-    for j=1:length(Def_outline)
-        Inpol.x=int64(Def_outline{j}(:,1)*scale); Inpol.y=int64(Def_outline{j}(:,2)*scale);
-        Outpol=clipper(Inpol,Offset*scale,1);
+    if DefectsExist
+        AllDef_pts=[];
+        for j=1:length(Def_outline)
+            Inpol.x=int64(Def_outline{j}(:,1)*scale); Inpol.y=int64(Def_outline{j}(:,2)*scale);
+            Outpol=clipper(Inpol,Offset*scale,1);
 
-        %convert Outpol back to real
-        xOff=[Outpol(1).x; Outpol(1).x(1)]/scale;
-        yOff=[Outpol(1).y; Outpol(1).y(1)]/scale;
-        %respace the domain for meshing
-        [xdef,ydef,~,Numpts]=respace_equally([xOff yOff],seed);
-        if Numpts < 5
-            [xdef,ydef,~,~]=respace_equally([xOff yOff],int16(5));
+            %convert Outpol back to real
+            xOff=[Outpol(1).x; Outpol(1).x(1)]/scale;
+            yOff=[Outpol(1).y; Outpol(1).y(1)]/scale;
+            %respace the domain for meshing
+            [xdef,ydef,~,Numpts]=respace_equally([xOff yOff],seed);
+            if Numpts < 5
+                [xdef,ydef,~,~]=respace_equally([xOff yOff],int16(5));
+            end
+            Def_pts{j}=[xdef ydef];
+            AllDef_pts=[AllDef_pts; Def_pts{j}];
         end
-        Def_pts{j}=[xdef ydef];
-        AllDef_pts=[AllDef_pts; Def_pts{j}];
-    end
+    end %fi Defects are being processed
        
     
     
@@ -295,13 +303,15 @@ if exist(strcat(Prefix,'_setup.mat'),'file')~=2
     plot(P_outline(:,1),P_outline(:,2),'k--'); hold on; axis equal;
     plot(D_outline(:,1),D_outline(:,2),'k-');
     
-    %plot defect outlines
-    for j=1:length(Def_outline)
-        plot(Def_outline{j}(:,1),Def_outline{j}(:,2),'k-','linewidth',1);
-         plot(Def_pts{j}(:,1),Def_pts{j}(:,2),'r-','linewidth',2);
-        text(mean(Def_outline{j}(:,1)),mean(Def_outline{j}(:,2))-Annot_off_y,3,...
-            num2str(j),'FontSize',8,'Color',[1 0 0],...
-            'horizontalalignment','center')
+    if DefectsExist
+        %plot defect outlines
+        for j=1:length(Def_outline)
+            plot(Def_outline{j}(:,1),Def_outline{j}(:,2),'k-','linewidth',1);
+             plot(Def_pts{j}(:,1),Def_pts{j}(:,2),'r-','linewidth',2);
+            text(mean(Def_outline{j}(:,1)),mean(Def_outline{j}(:,2))-Annot_off_y,3,...
+                num2str(j),'FontSize',8,'Color',[1 0 0],...
+                'horizontalalignment','center')
+        end
     end
     
         %plot the reference points and their order
@@ -466,4 +476,4 @@ end %if the setup file exists and redo isn't true
 
 %write a programme
 writeDuraRows(p(s_pnt,:),...
-    strcat(speOut,'.spe'));
+    strcat(speOut,'.spe'),load,objective);
